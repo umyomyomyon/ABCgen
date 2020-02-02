@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.options import Options
 import chromedriver_binary
 import os
 import sys
-import re
 
 BASE_URL = 'https://atcoder.jp/contests'
 ABC_URL = 'https://atcoder.jp/contests/archive?ratedType=1&category=0&keyword='
@@ -53,6 +52,20 @@ def validate(contest_type, contest_num, task, MAX_NUM, MIN_NUM):
   
   return False
 
+def check_task(contest_num, task):
+  task_41to125 = ['a', 'b', 'c', 'd']
+  task_126tolatest = task_41to125 + ['e', 'f']
+  lower_task = task.lower()
+
+  if contest_num > 125:
+    if task in task_126tolatest:
+      return True
+  else:
+    if task in task_41to125:
+      return True
+      
+  return False
+
 def shape_type(contest_type):
   return contest_type.upper()
 
@@ -68,9 +81,13 @@ def shape_task(task):
   return task.upper()
 
 def generate_dir(contest_type, contest_num, task):
-  contest_type = contest_type.upper()
-  task = task.upper()
-  path = f'./{contest_type}/{contest_num}/{task}'
+  shaped_contest_type = shape_type(contest_type)
+  shaped_contest_num = shape_num(contest_num)
+  shaped_task = shape_task(task)
+
+  shaped_contest_type = shaped_contest_type.upper()
+  shaped_task = shaped_task.upper()
+  path = f'./{shaped_contest_type}/{shaped_contest_num}/{shaped_task}'
   os.makedirs(path, exist_ok=True)
 
 def generate_python_file(input_file_title, generated_file_title):
@@ -90,6 +107,6 @@ def get_content_max(ABC_URL):
   ABC_max = ABC_max_element[0].text.split(' ')[3]
   return int(ABC_max)
 
-def generate_tasks_url(contest_type, contest_num):
-  contest_num = shape_num(contest_num)
-  return f'{BASE_URL}/{contest_type}{contest_num}/tasks'
+def generate_task_url(contest_type, contest_num, task):
+  shaped_contest_num = shape_num(contest_num)
+  return f'{BASE_URL}/{contest_type}{shaped_contest_num}/tasks/{contest_type}{shaped_contest_num}_{task}'
