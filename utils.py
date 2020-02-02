@@ -23,7 +23,7 @@ def validate_type(contest_type):
   
 def validate_num(contest_num, MAX_NUM, MIN_NUM):
   if type(contest_num) is not int:
-    return False
+    contest_num = int(contest_num)
   if contest_num < MIN_NUM or MAX_NUM < contest_num:
     return False
   else:
@@ -55,7 +55,6 @@ def validate(contest_type, contest_num, task, MAX_NUM, MIN_NUM):
 def check_task(contest_num, task):
   task_41to125 = ['a', 'b', 'c', 'd']
   task_126tolatest = task_41to125 + ['e', 'f']
-  lower_task = task.lower()
 
   if contest_num > 125:
     if task in task_126tolatest:
@@ -119,5 +118,7 @@ def get_content_max(ABC_URL):
   return int(ABC_max)
 
 def generate_task_url(contest_type, contest_num, task):
+  lowered_type = contest_type.lower()
   shaped_contest_num = shape_num(contest_num)
-  return f'{BASE_URL}/{contest_type}{shaped_contest_num}/tasks/{contest_type}{shaped_contest_num}_{task}'
+  lowered_task = task.lower()
+  return f'{BASE_URL}/{lowered_type}{shaped_contest_num}/tasks/{lowered_type}{shaped_contest_num}_{task}'
