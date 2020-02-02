@@ -80,24 +80,35 @@ def shape_num(num):
 def shape_task(task):
   return task.upper()
 
-def generate_dir(contest_type, contest_num, task):
-  shaped_contest_type = shape_type(contest_type)
-  shaped_contest_num = shape_num(contest_num)
+def shape_val(contest_type, contest_num, task):
+  shaped_val = []
+  shaped_type = shape_type(contest_type)
+  shaped_num = shape_num(contest_num)
   shaped_task = shape_task(task)
+  shaped_val.append(shaped_type)
+  shaped_val.append(shaped_num)
+  shaped_val.append(shaped_task)
+  return shaped_val
 
-  shaped_contest_type = shaped_contest_type.upper()
-  shaped_task = shaped_task.upper()
-  path = f'./{shaped_contest_type}/{shaped_contest_num}/{shaped_task}'
+def generate_dir(contest_type, contest_num, task):
+  shaped_val = shape_val(contest_type, contest_num, task)
+
+  path = f'./{shaped_val[0]}/{shaped_val[1]}/{shaped_val[2]}'
   os.makedirs(path, exist_ok=True)
 
-def generate_python_file(input_file_title, generated_file_title):
-  text = f'import os\nimport sys\nf = open("{input_file_title}.txt", "w") as f:\nsys.stdin = f\n\n#この下にコードを記述\n'
+def generate_python_file(title, contest_type, contest_num, task):
+  shaped_val = shape_val(contest_type, contest_num, task)
 
-  with open(f'{generated_file_title}.py', 'w') as f:
+  target_dir = f'./{shaped_val[0]}/{shaped_val[1]}/{shaped_val[2]}'
+  text = f'import os\nimport sys\nf = open("{title}_1.txt", "r")\nsys.stdin = f\n\n#この下にコードを記述\n'
+  with open(f'{target_dir}/{title}.py', 'w') as f:
     f.write(text)
 
-def generate_input_file(input_content, input_file_title):
-  with open(f'{input_file_title}.txt', 'w') as f:
+def generate_input_file(input_content, title, index, contest_type, contest_num, task):
+  shaped_val = shape_val(contest_type, contest_num, task)
+
+  target_dir = f'./{shaped_val[0]}/{shaped_val[1]}/{shaped_val[2]}'
+  with open(f'{target_dir}/{title}_{index}.txt', 'w') as f:
     f.write(input_content)
 
 #最新のABCのナンバーを取得する

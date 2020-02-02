@@ -17,7 +17,7 @@ driver = webdriver.Chrome(options=options)
 MAX_NUM = get_content_max(ABC_URL)
 
 contest_type = 'abc'
-contest_num = 54
+contest_num = 134
 task = 'b'
 
 #引数が正しいか検証する
@@ -48,5 +48,13 @@ for i in range(0, sample_qty * 2, 2):
   target = driver.find_element_by_id(f'pre-sample{i}').get_attribute('textContent')
   input_list.append(target)
   print(target)
+
+title = driver.title.replace(' ', '').split('-')[1]
+index = 1
+for input_content in input_list:
+  generate_input_file(input_content, title, index, contest_type, contest_num, task)
+  index += 1
+
+generate_python_file(title, contest_type, contest_num, task)
 
 driver.quit()
